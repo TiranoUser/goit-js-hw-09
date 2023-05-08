@@ -22,33 +22,34 @@ const options = {
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
-  onClose(selectedDates) {
-    if (selectedDates[0] - Date.now() < 0) {
+  onClose([selectedDates]) {
+    if (Date.now() > selectedDates) {
       Notify.failure('Please choose a date in the future');
+      startEl.setAttribute('disabled', true);
 
       //   window.alert('Please choose a date in the future');
     } else {
       startEl.removeAttribute('disabled');
-      promotionDate = selectedDates[0];
+      promotionDate = selectedDates;
     }
   },
 };
 
 const timer = {
+  render() {
+    const deltaTime = convertMs(promotionDate - Date.now());
+
+    daysEl.textContent = addLeadingZero(deltaTime.days);
+    hoursEl.textContent = addLeadingZero(deltaTime.hours);
+    minutesEl.textContent = addLeadingZero(deltaTime.minutes);
+    secondsEl.textContent = addLeadingZero(deltaTime.seconds);
+  },
   start() {
     const timeId = setInterval(() => {
-      const deltaTime = convertMs(promotionDate - Date.now());
+      timer.render();
+      const deltams = promotionDate - Date.now();
 
-      daysEl.textContent = addLeadingZero(deltaTime.days);
-      hoursEl.textContent = addLeadingZero(deltaTime.hours);
-      minutesEl.textContent = addLeadingZero(deltaTime.minutes);
-      secondsEl.textContent = addLeadingZero(deltaTime.seconds);
-      if (
-        deltaTime.days === 0 &&
-        deltaTime.hours === 0 &&
-        deltaTime.minutes === 0 &&
-        deltaTime.seconds === 0
-      ) {
+      if (deltams < 1000) {
         Notify.success('Time is over');
         clearInterval(timeId);
       }
@@ -61,6 +62,7 @@ inputEl.addEventListener('focus', () => {
 });
 
 startEl.addEventListener('click', () => {
+  // timer.render();
   timer.start();
   startEl.setAttribute('disabled', true);
 });

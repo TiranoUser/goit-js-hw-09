@@ -1,5 +1,5 @@
-startEl = document.querySelector('[data-start]');
-stopEl = document.querySelector('[data-stop]');
+const startEl = document.querySelector('[data-start]');
+const stopEl = document.querySelector('[data-stop]');
 let timerId = null;
 
 startEl.addEventListener('click', changeColor);
